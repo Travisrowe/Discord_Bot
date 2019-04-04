@@ -5,7 +5,7 @@
 Developing a bot for the group-speak application, Discord, which has
 
 - Joining capabilities
-    - join a chat channel
+    - Join a chat channel
 - Messaging capabilities
     - Programmer defined messages OR
     - User defined messages
