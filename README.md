@@ -3,7 +3,9 @@
 ### Overview
 
 Developing a bot for the group-speak application, Discord, which has
+-Joining ability
+    - join a chat channel
 - Messaging capabilities
     - Programmer defined messages OR
     - User defined messages
-- Audio capabilites: The ability to join a chat channel and play snippets of audio
+- Audio capabilites: play snippets of audio
