@@ -14,6 +14,13 @@ Some basic capabilities of the bot should be:
 - Audio capabilites
     - Play snippets of audio
 
-We can start with parts 1 and 2 of the following tutorial: https://youtu.be/ZNA7Eij3UmY. This can get us to implementing Messaging capabilities.
-We can then work on audio capabilities from this tutorial: https://youtu.be/MbhXIddT2YY.
-And come up with ideas to make our bot unique afterward (sarcastic bot)!
+We can start with parts 1 and 2 of the following tutorial: 
+
+https://youtu.be/ZNA7Eij3UmY. 
+
+This can get us to implementing Messaging capabilities.
+We can then work on audio capabilities from this tutorial: 
+
+https://youtu.be/MbhXIddT2YY.
+
+And make our bot unique with some sarcastic messages. We may be able to have the bot keep track of helpful things too, like what games the channel's members are playing the most or when certain people were last online.
