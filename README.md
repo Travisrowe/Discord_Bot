@@ -13,3 +13,7 @@ Some basic capabilities of the bot should be:
     - User defined messages
 - Audio capabilites
     - Play snippets of audio
+
+We can start with parts 1 and 2 of the following tutorial: https://youtu.be/ZNA7Eij3UmY. This can get us to implementing Messaging capabilities.
+We can then work on audio capabilities from this tutorial: https://youtu.be/MbhXIddT2YY.
+And come up with ideas to make our bot unique afterward (sarcastic bot)!
