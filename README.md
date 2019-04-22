@@ -4,6 +4,8 @@
 
 The goal of this project is developing a bot for the group-speak application, Discord. Bots typically have all the permissions of a user on a Discord channel in that they can chat in text channels, send private messages, and even join audio channels to play snippets of audio. Bots typically have programmer-defined or even channel-admin-defined commands so that a user can type a macro, like "?help" or "!help", and receive a private message from the bot, for example.
 
+NOTE: that this program requires a file in the same directory as Run_Bot.py called token.txt which contains only the token of the bot that resides in your Discord channel. This can be found at https://discordapp.com/developers/
+
 ### How to use
 
 All commands can start with either ?, !, or $. For example, you can find a list of commands by typing one of the following.
