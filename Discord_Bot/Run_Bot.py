@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+from discord.voice_client import VoiceClient
+import asyncio
 import random
 
 # BOT_PREFIX = '?'
@@ -42,12 +44,35 @@ async def greet(ctx):
 async def cat(ctx):
     await ctx.send("https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif")
 
-# @client.command()
-# async def eight_ball():
-#     possible_responses = [
-#         'That is a resounding no',
-#         'Hell to the nah-nah-nah'
-#     ]
-#     await client.channel.send(random.choice(possible_responses))
+@client.command()
+async def eight_ball(ctx):
+    possible_responses = [
+        'That is a resounding no',
+        'Hell to the nah-nah-nah',
+        #TODO: Add more responses
+    ]
+    await ctx.send(random.choice(possible_responses))
+
+@client.command()
+async def airhorn(context):
+    await context.send("Starting Airhorn")
+    user = context.message.author
+    await context.send(str(user))
+    await context.send(str(user.voice.voice_channel))
+    voice_channel = user.voice.voice_channel
+    await context.send(str(voice_channel.name))
+    channel = None
+    if voice_channel != None:
+        channel = voice_channel.name
+        await client.say('User is in channel: ' + channel)
+        vc = await client.join_voice_channel(voice_channel)
+        player = vc.create_ffmpeg_player('vuvuzela.mp3', after=lambda: print('done'))
+        player.start()
+        while not player.is_done():
+            await asyncio.sleep(1)
+        player.stop()
+        await vc.disconnect()
+    else:
+        await client.say('User is not in a channel.')
 
 client.run(TOKEN)
