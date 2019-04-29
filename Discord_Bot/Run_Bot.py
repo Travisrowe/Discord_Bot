@@ -68,9 +68,11 @@ Voice chat functions
 '''
 @client.command(pass_context=True)
 async def join(ctx):
-    await ctx.send("Starting join")
+    #await ctx.send("Starting join")
     channel = ctx.message.author.voice.channel
-    await ctx.send(str(channel))
+    #await ctx.send(str(channel))
+
+    #outdated methods
     #await client.join_voice_channel(channel)
     #await ctx.voice_client.move_to(channel)
 
@@ -83,43 +85,28 @@ async def join(ctx):
         await voice.move_to(channel)
     else:
         voice = await channel.connect()
-    source = FFmpegPCMAudio('1.m4a')
-    player = voice.play(source)
+    # source = FFmpegPCMAudio('1.m4a')
+    # player = voice.play(source)
 
+@client.command(pass_context=True)
 async def leave(ctx):
-    
+    await ctx.send("Starting leave")
+    await ctx.voice_client.disconnect()
 
 @client.command()
 async def airhorn(ctx):
     await ctx.send("Starting Airhorn")
-    #server = ctx.message.server
-    #gets the user that typed the message
-    user = ctx.message.author
-    
-    await ctx.send(str(user))
-    #get the voice channel user is in. this is currently not working!
-    voice_channel = ctx.message.author.voice.voice_channel
-    await client.join_voice_channel(voice_channel)
-    await ctx.send("voice channel name: " + str(voice_channel.name))
-    await ctx.send("voice channel: " + str(voice_channel))
-    channel = None
-    #if user is in voice channel
-    if voice_channel != None:
-        channel = voice_channel.name
-        await ctx.send('User is in channel: ' + channel)
-        #join the voice channel
-        vc = await client.join_voice_channel(voice_channel)
-        #play the sound
-        player = vc.create_ffmpeg_player('vuvuzela.mp3', after=lambda: print('done'))
-        player.start()
-        #wait until the sound is done before the bot disconnects
-        while not player.is_done():
-            await asyncio.sleep(1)
-        player.stop()
-        #bot disconnects
-        await vc.disconnect()
-    else:
-        await ctx.send('User is not in a channel.')
+
+    #currently not working!
+    #TODO: use code from join to join channel
+
+    #use source = FFmpegPCMAudio('1.m4a')
+        # player = voice.play(source)
+    #as well as youtube_dl
+    #to play audio
+    #while not player.is_done():
+    #    await asyncio.sleep(1)
+    #use code from leave to disconnect
 
 #The bot joins the channel and awaits commands. This is neccessary!
 client.run(TOKEN)
