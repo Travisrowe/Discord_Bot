@@ -2,12 +2,14 @@ import discord
 from discord.ext import commands
 from discord import FFmpegPCMAudio
 from discord.utils import get
+import youtube_dl
 import asyncio
 import random
 
 # BOT_PREFIX = '?'
 BOT_PREFIX = ('?', '!', '$')
 TOKEN = open("token.txt","r").read()
+players = {}
 
 client = commands.Bot(command_prefix=BOT_PREFIX, description='A bot that greets the user back.')
 # bot = commands.Bot(command_prefix=BOT_PREFIX, description='A bot that greets the user back.')
@@ -23,8 +25,14 @@ async def on_message(message):
     #don't want the bot responding to itself
     if message.author == client.user:
         return
+
     print(f"{message.channel}: {message.author}: {message.author.name}: {message.content}")
-    if "hello" in message.content.lower():
+    if "booty meat" in message.content.lower():
+        # player = await create_ytdl_player("https://www.youtube.com/watch?v=25f2IgIrkD4")
+        await message.channel.send("https://www.youtube.com/watch?v=25f2IgIrkD4")
+        #await message.channel.send('Hi!')
+
+    elif "hello" in message.content.lower():
         await message.channel.send('Hi!')
     
     #Not putting this line at the end of the on_message function can block all other events from being processed
@@ -110,3 +118,15 @@ async def airhorn(ctx):
 
 #The bot joins the channel and awaits commands. This is neccessary!
 client.run(TOKEN)
+
+# I found this and tried to test it but I can't get the bot to
+# join the voice channel
+# In order to do this you must install ffmpeg, add it to you path, and pip install -U youtube_dl
+# I can show you these steps or you can just follow this video https://www.youtube.com/watch?v=MbhXIddT2YY
+@client.command(pass_context=True)
+async def play(ctx, url):
+    server = ctx.message.server
+    voice_client = client.voice_client_in(server)
+    player = await voice_client.create_ytdl_player(url)
+    players[server.id] = players
+    player.start()
