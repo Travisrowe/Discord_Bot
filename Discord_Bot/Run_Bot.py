@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from discord.voice_client import VoiceClient
+from discord import FFmpegPCMAudio
+from discord.utils import get
 import asyncio
 import random
 
@@ -19,6 +20,7 @@ async def on_ready():
 #client events do not look for BOT_PREFIX
 @client.event
 async def on_message(message):
+    #don't want the bot responding to itself
     if message.author == client.user:
         return
     print(f"{message.channel}: {message.author}: {message.author.name}: {message.content}")
@@ -61,22 +63,50 @@ async def eight_ball(ctx):
     ]
     await ctx.send(random.choice(possible_responses))
 
-#This is a voice chat function
+'''
+Voice chat functions
+'''
+@client.command(pass_context=True)
+async def join(ctx):
+    await ctx.send("Starting join")
+    channel = ctx.message.author.voice.channel
+    await ctx.send(str(channel))
+    #await client.join_voice_channel(channel)
+    #await ctx.voice_client.move_to(channel)
+
+    #https://stackoverflow.com/questions/55321681/discord-py-voicestate-object-has-no-attribute-voice-channel
+    if not channel:
+        await ctx.send("You are not connected to a voice channel")
+        return
+    voice = get(client.voice_clients, guild=ctx.guild)
+    if voice and voice.is_connected():
+        await voice.move_to(channel)
+    else:
+        voice = await channel.connect()
+    source = FFmpegPCMAudio('1.m4a')
+    player = voice.play(source)
+
+async def leave(ctx):
+    
+
 @client.command()
-async def airhorn(context):
-    await context.send("Starting Airhorn")
+async def airhorn(ctx):
+    await ctx.send("Starting Airhorn")
+    #server = ctx.message.server
     #gets the user that typed the message
-    user = context.message.author
-    await context.send(str(user))
-    await context.send(str(user))
+    user = ctx.message.author
+    
+    await ctx.send(str(user))
     #get the voice channel user is in. this is currently not working!
-    voice_channel = user.voice.voice_channel
-    await context.send(str(voice_channel.name))
+    voice_channel = ctx.message.author.voice.voice_channel
+    await client.join_voice_channel(voice_channel)
+    await ctx.send("voice channel name: " + str(voice_channel.name))
+    await ctx.send("voice channel: " + str(voice_channel))
     channel = None
     #if user is in voice channel
     if voice_channel != None:
         channel = voice_channel.name
-        await client.say('User is in channel: ' + channel)
+        await ctx.send('User is in channel: ' + channel)
         #join the voice channel
         vc = await client.join_voice_channel(voice_channel)
         #play the sound
@@ -89,7 +119,7 @@ async def airhorn(context):
         #bot disconnects
         await vc.disconnect()
     else:
-        await client.say('User is not in a channel.')
+        await ctx.send('User is not in a channel.')
 
 #The bot joins the channel and awaits commands. This is neccessary!
 client.run(TOKEN)
