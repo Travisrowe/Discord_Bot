@@ -116,17 +116,37 @@ async def airhorn(ctx):
     #    await asyncio.sleep(1)
     #use code from leave to disconnect
 
-#The bot joins the channel and awaits commands. This is neccessary!
-client.run(TOKEN)
-
 # I found this and tried to test it but I can't get the bot to
 # join the voice channel
 # In order to do this you must install ffmpeg, add it to you path, and pip install -U youtube_dl
 # I can show you these steps or you can just follow this video https://www.youtube.com/watch?v=MbhXIddT2YY
 @client.command(pass_context=True)
 async def play(ctx, url):
+    #join channel user is in
+    channel = ctx.message.author.voice.channel
+    #https://stackoverflow.com/questions/55321681/discord-py-voicestate-object-has-no-attribute-voice-channel
+    if not channel:
+        await ctx.send("You are not connected to a voice channel")
+        return
+    voice = get(client.voice_clients, guild=ctx.guild)
+    if voice and voice.is_connected():
+        await voice.move_to(channel)
+    else:
+        voice = await channel.connect()
+
+    #play audio
     server = ctx.message.server
     voice_client = client.voice_client_in(server)
     player = await voice_client.create_ytdl_player(url)
     players[server.id] = players
     player.start()
+    # while not player.is_done(): #don't leave until player is done
+    #    await asyncio.sleep(1)
+    await asyncio.sleep(1)
+
+    #leave channel
+    await ctx.send("Starting leave")
+    await ctx.voice_client.disconnect()
+
+#The bot joins the channel and awaits commands. This is neccessary!
+client.run(TOKEN)
