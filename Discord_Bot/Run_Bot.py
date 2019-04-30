@@ -8,6 +8,8 @@ import random
 
 # BOT_PREFIX = '?'
 BOT_PREFIX = ('?', '!', '$')
+curse_words = ['fuck', 'bitch', 'shit', 'ass', 'damn']
+offensive_words = ['nigga', "nigger", 'cunt', 'whore', 'hoe', 'damn', 'cunt']
 TOKEN = open("token.txt","r").read()
 players = {}
 
@@ -25,12 +27,17 @@ async def on_message(message):
     #don't want the bot responding to itself
     if message.author == client.user:
         return
-
+    
     print(f"{message.channel}: {message.author}: {message.author.name}: {message.content}")
-    if "booty meat" in message.content.lower():
+    if message.content.lower() in curse_words:
         # player = await create_ytdl_player("https://www.youtube.com/watch?v=25f2IgIrkD4")
-        await message.channel.send("https://www.youtube.com/watch?v=25f2IgIrkD4")
+        await message.channel.send("https://media1.tenor.com/images/a051059c7642e9a474a13e1ab7191fb6/tenor.gif?itemid=5600117")
         #await message.channel.send('Hi!')
+
+    elif message.content.lower() in offensive_words:
+        # player = await create_ytdl_player("https://www.youtube.com/watch?v=25f2IgIrkD4")
+        await message.channel.send("https://media0.giphy.com/media/70orEIVDASzXW/giphy.gif")
+        await message.channel.send("Woah...")
 
     elif "hello" in message.content.lower():
         await message.channel.send('Hi!')
@@ -142,7 +149,7 @@ async def play(ctx, url):
     player.start()
     # while not player.is_done(): #don't leave until player is done
     #    await asyncio.sleep(1)
-    await asyncio.sleep(1)
+    await asyncio.sleep(5)
 
     #leave channel
     await ctx.send("Starting leave")
