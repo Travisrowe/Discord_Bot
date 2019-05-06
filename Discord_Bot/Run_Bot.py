@@ -5,11 +5,12 @@ from discord.utils import get
 import youtube_dl
 import asyncio
 import random
+import sys
 
 # BOT_PREFIX = '?'
 BOT_PREFIX = ('?', '!', '$')
-curse_words = ['fuck', 'bitch', 'shit', 'ass', 'damn']
-offensive_words = ['nigga', "nigger", 'cunt', 'whore', 'hoe', 'damn', 'cunt']
+curse_words = ['fuck', 'bitch', 'shit', 'ass', 'damn', 'cumquat']
+offensive_words = ['nigga', "nigger", 'cunt', 'whore', 'hoe', 'damn', 'cunt', 'bootymeat']
 TOKEN = open("token.txt","r").read()
 players = {}
 
@@ -53,17 +54,16 @@ async def on_message(message):
         return
     
     print(f"{message.channel}: {message.author}: {message.author.name}: {message.content}")
-    if message.content.lower() in curse_words:
-        # player = await create_ytdl_player("https://www.youtube.com/watch?v=25f2IgIrkD4")
-        await message.channel.send("https://media1.tenor.com/images/a051059c7642e9a474a13e1ab7191fb6/tenor.gif?itemid=5600117")
-        #await message.channel.send('Hi!')
+    for st in curse_words:
+        if st in message.content.lower():
+            await message.channel.send("https://media1.tenor.com/images/a051059c7642e9a474a13e1ab7191fb6/tenor.gif?itemid=5600117")
 
-    elif message.content.lower() in offensive_words:
-        # player = await create_ytdl_player("https://www.youtube.com/watch?v=25f2IgIrkD4")
-        await message.channel.send("https://media0.giphy.com/media/70orEIVDASzXW/giphy.gif")
-        await message.channel.send("Woah...")
+    for st in offensive_words: 
+        if st in message.content.lower():
+            await message.channel.send("https://media0.giphy.com/media/70orEIVDASzXW/giphy.gif")
+            await message.channel.send("Woah...")
 
-    elif "hello" in message.content.lower():
+    if "hello" in message.content.lower():
         await message.channel.send('Hi!')
     
     #Not putting this line at the end of the on_message function can block all other events from being processed
@@ -204,7 +204,6 @@ class YTDLSource(discord.PCMVolumeTransformer):
     @classmethod
     async def from_url(cls, url, *, loop=None, stream=False):
         loop = loop or asyncio.get_event_loop()
-        print(loop)
         data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
 
         if 'entries' in data:
@@ -214,6 +213,9 @@ class YTDLSource(discord.PCMVolumeTransformer):
         print('filename')
         filename = data['url'] if stream else ytdl.prepare_filename(data)
         print(filename)
+        var = cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+        print('var' + var)
+        sys.stdout.flush()
         return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
 class Music(commands.Cog):
@@ -248,6 +250,8 @@ class Music(commands.Cog):
             print("player is not ready")
             await ctx.send("player is not ready")
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
+            print(player)
+            sys.stdout.flush()
             await ctx.send("player is ready")
             ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
