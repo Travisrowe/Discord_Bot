@@ -36,7 +36,7 @@ ffmpeg_options = {
 }
 
 # Suppress noise about console usage from error
-youtube_dl.utils.bug_reports_message = lambda: ''
+youtube_dl.utils.bug_reports_message = lambda: 'error'
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
@@ -98,7 +98,16 @@ async def eight_ball(ctx):
     possible_responses = [
         'That is a resounding no',
         'Hell to the nah-nah-nah',
-        #TODO: Add more responses
+        'I wouldn\'t count on it',
+        'Probably not',
+        'Yeah! And I\'ll marry Jennifer Aniston!',
+        'Sure. Why not.', 
+        'Whatever you say, pal', 
+        'Uh huh. Whatever.', 
+        'Yeah, it could happen. It won\'t, but it could.', 
+        'I guess so.', 
+        'Eh, alright', 
+        'Could be, kid. Could be.'
     ]
     await ctx.send(random.choice(possible_responses))
 
@@ -195,13 +204,16 @@ class YTDLSource(discord.PCMVolumeTransformer):
     @classmethod
     async def from_url(cls, url, *, loop=None, stream=False):
         loop = loop or asyncio.get_event_loop()
+        print(loop)
         data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
 
         if 'entries' in data:
+            print('entries in data')
             # take first item from a playlist
             data = data['entries'][0]
-
+        print('filename')
         filename = data['url'] if stream else ytdl.prepare_filename(data)
+        print(filename)
         return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
 class Music(commands.Cog):
@@ -212,7 +224,18 @@ class Music(commands.Cog):
     async def play(self, ctx, *, query):
         """Plays a file from the local filesystem"""
 
-        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(query))
+        await ctx.send('starting play')
+        if(ctx.opus.is_loaded):
+            await ctx.send('opus is loaded')
+
+        try:
+            source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(query))
+            await ctx.send('got source')
+        except Exception:
+            await ctx.send('source not got')
+            await ctx.send(Exception)
+        
+        #voice = get(client.voice_clients, guild=ctx.guild)
         ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
 
         await ctx.send('Now playing: {}'.format(query))
@@ -222,7 +245,10 @@ class Music(commands.Cog):
         """Plays from a url (almost anything youtube_dl supports)"""
 
         async with ctx.typing():
+            print("player is not ready")
+            await ctx.send("player is not ready")
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
+            await ctx.send("player is ready")
             ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
         await ctx.send('Now playing: {}'.format(player.title))
@@ -232,8 +258,11 @@ class Music(commands.Cog):
         """Streams from a url (same as yt, but doesn't predownload)"""
 
         async with ctx.typing():
-            player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
-            ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
+            print("player is not ready")
+            await ctx.send("player is not ready")
+            player = await YTDLSource.from_url(url, loop=False, stream=True)
+            await ctx.send("player is ready")
+            ctx.VoiceClient.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
         await ctx.send('Now playing: {}'.format(player.title))
 
